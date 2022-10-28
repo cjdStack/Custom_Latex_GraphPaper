@@ -1,0 +1,24 @@
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{CDCC}[2022/09/29 CDs Custom Colors]
+\RequirePackage{geometry}
+\RequirePackage{xcolor}
+\RequirePackage{xparse}
+\RequirePackage{tikz}
+
+% Named Color Generator
+\NewDocumentCommand{\NCG}{O{RGB} m m}
+{
+\definecolor{#2}{#1}{#3}
+}
+
+\NCG{EngR}{255,0,0}       % Engineering red
+\NCG{EngG}{0,255,0}       % Engineering green
+\NCG{EngB}{0,0,255}       % Engineering blue
+\NCG{EngC}{0,255,255}     % Engineering cyan
+\NCG{EngM}{255,0,255}     % Engineering magenta
+\NCG{EngY}{255,255,0}     % Engineering yellow
+\NCG{Blk}{0,0,0}          % Black
+\NCG{MdGray}{128,128,128} % Middle Gray
+\NCG{Wht}{255,255,255}    % White
+
+\endinput
