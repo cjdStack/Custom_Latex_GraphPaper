@@ -16,63 +16,65 @@
 \RequirePackage{listofitems}
 \RequirePackage{ellipse}
 \RequirePackage{CDCC}
-\newif\ifGP@geometrypreviouslyloaded
-\GP@geometrypreviouslyloadedfalse
-
-\DeclareStringOption{geometry}
-
-\ProcessKeyvalOptions*
 
 
-\newif\ifCircleHorizontal
-\CircleHorizontalfalse
 
-\define@boolkey+[CS]{Circ}{Horizontal}[false]{\ifKV@CS@Circ@Horizontal
-\CircleHorizontaltrue
+
+
+
+
+\newif\ifHoleHorizontal
+\HoleHorizontalfalse
+
+\define@boolkey+[CS]{Hole}{Horizontal}{\ifCS@Hole@Horizontal
+\HoleHorizontaltrue
 \else
-\CircleHorizontalfalse
+\HoleHorizontalfalse
 \fi
 }
 {
-\CircleHorizontalfalse
+\HoleHorizontalfalse
 }
 
-\define@key{CS}[Circ]{LineColor}[Blk]{\def\CircleLineColor{#1}}
-\define@key{CS}[Circ]{FillColor}[None]{\def\CircleFillColor{#1}}
+\define@key[CS]{Hole}{LineColor}[Blk]{\def\HoleLineColor{#1}}
+\define@key[CS]{Hole}{FillColor}[none]{\def\HoleFillColor{#1}}
 
+
+\ExplSyntaxOn
+\presetkeys[CS]{Hole}{LineColor=Blk}{}
+\presetkeys[CS]{Hole}{FillColor=None}{}
+\presetkeys[CS]{Hole}{Horizontal=false}{}
 %#1 = settings |LineColor,FillColor,Horizontal|
 %#2 = center
 %#3 = major radius
 %#4 = angle
-\NewDocumentCommand{\DrawCircle}{O{LineColor=Blk,FillColor=None,Horizontal=false} m m m}
+\NewDocumentCommand{\DrawHole}{O{LineColor=Blk,FillColor=none,Horizontal=false} m m m}
 {
-\presetkeys{CS}[Circ]{LineColor=Blk}
-\presetkeys{CS}[Circ]{FillColor=None}
-\presetkeys{CS}[Circ]{Horizontal=false}
-\setkeys{GP}{#1}
-\pgfmathsetmacro\wid{#3 / (sin(#4))}
-\def\Radii{}
-\ifCircleHorizontal
-\def\Radii{\wid pt and #3}
+\presetkeys[CS]{Hole}{LineColor=Blk}{}
+\presetkeys[CS]{Hole}{FillColor=none}{}
+\presetkeys[CS]{Hole}{Horizontal=false}{}
+\setkeys[CS]{Hole}{#1}
+
+\pgfmathsetmacro\hgt{#3}
+\pgfmathsetmacro\wid{\hgt * (cos(#4))}
+%\pgfmathsetmacro\widi{\
+%\def\Radii{}
+\ifHoleHorizontal
+%\def\Radii{\wid pt and #3}
+\edef\magr{\hgt pt}
+\edef\minr{\wid pt}
 \else
-\def\Radii{#3 and \wid pt}
+%\def\Radii{#3 and \wid pt}
+\edef\minr{\hgt pt}
+\edef\magr{\wid pt}
 \fi
-\draw[draw=\CircleLineColor , fill=\CircleFillColor] (#2)ellipse(\Radii);
+%\def\radii{\magr\space and\space \minr}
+\draw[draw=\HoleLineColor , fill=\HoleFillColor] (#2) ellipse[x\space radius=\minr, y\space radius= \magr];%(\magr\space and\space\minr);
+%\expandafter\draw[draw=\CircleLineColor , fill=\CircleFillColor] (#2)ellipse(\Radii);
 }
+\ExplSyntaxOff
 
 
-%\NewDocumentCommand{\DrawCirclev}{O{Blk} m m m}
-%{
-%\pgfmathsetmacro\wid{#3 / (sin(#4))}
-%\draw[#1, fill=orange](#2) ellipse(#3 and \wid pt);
-%
-%}
-%\NewDocumentCommand{\DrawCircleh}{O{Blk} m m m}
-%{
-%\pgfmathsetmacro\wid{#3 / (sin(#4))}
-%\draw[#1, fill=blue](#2) ellipse(\wid pt and #3);
-%
-%}
 
 
 
