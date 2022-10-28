@@ -1,0 +1,79 @@
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{CDCS}[2022/09/29 CDs Custom Shapes]
+\RequirePackage{geometry}
+\RequirePackage{tikz}
+\RequirePackage{xparse}
+\RequirePackage{pgf}
+\RequirePackage{xcolor}
+\RequirePackage{xkeyval}
+\usetikzlibrary{patterns.meta,calc,hobby}
+\RequirePackage{calculator}
+\RequirePackage{alphalph}
+\RequirePackage{ifthen}
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\RequirePackage{pgfmath}
+\RequirePackage{listofitems}
+\RequirePackage{ellipse}
+\RequirePackage{CDCC}
+\newif\ifGP@geometrypreviouslyloaded
+\GP@geometrypreviouslyloadedfalse
+
+\DeclareStringOption{geometry}
+
+\ProcessKeyvalOptions*
+
+
+\newif\ifCircleHorizontal
+\CircleHorizontalfalse
+
+\define@boolkey+[CS]{Circ}{Horizontal}[false]{\ifKV@CS@Circ@Horizontal
+\CircleHorizontaltrue
+\else
+\CircleHorizontalfalse
+\fi
+}
+{
+\CircleHorizontalfalse
+}
+
+\define@key{CS}[Circ]{LineColor}[Blk]{\def\CircleLineColor{#1}}
+\define@key{CS}[Circ]{FillColor}[None]{\def\CircleFillColor{#1}}
+
+%#1 = settings |LineColor,FillColor,Horizontal|
+%#2 = center
+%#3 = major radius
+%#4 = angle
+\NewDocumentCommand{\DrawCircle}{O{LineColor=Blk,FillColor=None,Horizontal=false} m m m}
+{
+\presetkeys{CS}[Circ]{LineColor=Blk}
+\presetkeys{CS}[Circ]{FillColor=None}
+\presetkeys{CS}[Circ]{Horizontal=false}
+\setkeys{GP}{#1}
+\pgfmathsetmacro\wid{#3 / (sin(#4))}
+\def\Radii{}
+\ifCircleHorizontal
+\def\Radii{\wid pt and #3}
+\else
+\def\Radii{#3 and \wid pt}
+\fi
+\draw[draw=\CircleLineColor , fill=\CircleFillColor] (#2)ellipse(\Radii);
+}
+
+
+%\NewDocumentCommand{\DrawCirclev}{O{Blk} m m m}
+%{
+%\pgfmathsetmacro\wid{#3 / (sin(#4))}
+%\draw[#1, fill=orange](#2) ellipse(#3 and \wid pt);
+%
+%}
+%\NewDocumentCommand{\DrawCircleh}{O{Blk} m m m}
+%{
+%\pgfmathsetmacro\wid{#3 / (sin(#4))}
+%\draw[#1, fill=blue](#2) ellipse(\wid pt and #3);
+%
+%}
+
+
+
+\endinput
